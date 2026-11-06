@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jogo de Matemática VR - Meta Quest</title>
+  
+  <!-- Biblioteca A-Frame para WebXR/VR -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  
+  <!-- Folha de Estilos Externa -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Tela 2D de Abertura / Habilitação de Áudio -->
+  <div id="overlay">
+    <div class="modal-card">
+      <div class="modal-title">🥽 MATEMÁTICA VR</div>
+      <div class="modal-desc">
+        Desafio numérico interativo em 3D para Meta Quest e Navegadores.
+      </div>
+      <button class="btn-start" onclick="iniciarJogo()">INICIAR JOGO VR (VOZ ATIVADA)</button>
+      
+      <div class="instructions-list">
+        🎯 <strong>No Meta Quest:</strong> Aponte o raio laser para os números e aperte o gatilho.<br>
+        ⌨️ <strong>No Teclado:</strong> Clique no número. Use <b>W/A/S/D</b> para andar, <b>E / Espaço</b> para subir e <b>Q / Shift</b> para descer.
+      </div>
+    </div>
+  </div>
+
+  <!-- Cena 3D VR com A-Frame -->
+  <a-scene background="color: #38bdf8" webxr="optionalFeatures: hit-test, local-floor" embedded style="width:100vw; height:100vh;">
+    <!-- Iluminação Solar de Praia -->
+    <a-entity light="type: ambient; color: #fef08a; intensity: 0.8"></a-entity>
+    <a-entity light="type: directional; color: #fff7ed; intensity: 1.2" position="5 10 3" cast-shadow="true"></a-entity>
+    <a-entity light="type: point; color: #38bdf8; intensity: 0.6" position="0 4 -2"></a-entity>
+
+    <!-- Céu Tropical Ensolarado -->
+    <a-sky color="#38bdf8"></a-sky>
+
+    <!-- Sol Tropical Brilhante -->
+    <a-sphere position="15 25 -20" radius="3" color="#fef08a" material="shader: flat; emissive: #fef08a"></a-sphere>
+
+    <!-- AMBIENTE DE PRAIA TROPICAL 3D (Ilha de Areia + Mar Azul em 360°) -->
+    <a-entity id="ambiente-praia">
+      <!-- Ilha de Areia Amarela -->
+      <a-cylinder position="0 -0.05 0" radius="25" height="0.1" color="#fde047" material="roughness: 0.9"></a-cylinder>
+
+      <!-- Mar Azul Turquesa em 360° -->
+      <a-plane position="0 -0.15 0" rotation="-90 0 0" width="300" height="300" color="#0284c7" material="opacity: 0.9; roughness: 0.1"></a-plane>
+      <a-ring position="0 -0.12 0" rotation="-90 0 0" radius-inner="24.8" radius-outer="27" color="#e0f2fe" material="opacity: 0.6"></a-ring>
+
+      <!-- PALMEIRAS TROPICAIS 3D EM 360 GRAUS -->
+      <!-- Palmeira 1 (Frente-Esquerda) -->
+      <a-entity position="-7 0 -5" rotation="0 45 0">
+        <a-cylinder height="3.5" radius-bottom="0.22" radius-top="0.14" color="#854d0e" position="0 1.75 0" rotation="0 0 -8"></a-cylinder>
+        <a-entity position="-0.25 3.4 0">
+          <a-cone radius-bottom="0.6" height="2.2" color="#16a34a" rotation="65 0 0" position="0 0 0.9"></a-cone>
+          <a-cone radius-bottom="0.6" height="2.2" color="#15803d" rotation="65 90 0" position="0.9 0 0"></a-cone>
+          <a-cone radius-bottom="0.6" height="2.2" color="#16a34a" rotation="65 180 0" position="0 0 -0.9"></a-cone>
+          <a-cone radius-bottom="0.6" height="2.2" color="#15803d" rotation="65 270 0" position="-0.9 0 0"></a-cone>
+          <a-cone radius-bottom="0.5" height="2.0" color="#22c55e" rotation="50 45 0" position="0.6 0 0.6"></a-cone>
+          <a-cone radius-bottom="0.5" height="2.0" color="#22c55e" rotation="50 225 0" position="-0.6 0 -0.6"></a-cone>
+        </a-entity>
+      </a-entity>
+
+      <!-- Palmeira 2 (Frente-Direita) -->
+      <a-entity position="8 0 -6" rotation="0 -30 0">
+        <a-cylinder height="4" radius-bottom="0.24" radius-top="0.15" color="#78350f" position="0 2 0" rotation="0 0 10"></a-cylinder>
+        <a-entity position="0.3 3.9 0">
+          <a-cone radius-bottom="0.65" height="2.4" color="#15803d" rotation="65 15 0" position="0 0 1"></a-cone>
+          <a-cone radius-bottom="0.65" height="2.4" color="#16a34a" rotation="65 105 0" position="1 0 0"></a-cone>
+          <a-cone radius-bottom="0.65" height="2.4" color="#15803d" rotation="65 195 0" position="0 0 -1"></a-cone>
+          <a-cone radius-bottom="0.65" height="2.4" color="#16a34a" rotation="65 285 0" position="-1 0 0"></a-cone>
+        </a-entity>
+      </a-entity>
+
+      <!-- Palmeira 3 (Atrás-Esquerda) -->
+      <a-entity position="-9 0 7" rotation="0 135 0">
+        <a-cylinder height="3.8" radius-bottom="0.23" radius-top="0.14" color="#854d0e" position="0 1.9 0" rotation="0 0 6"></a-cylinder>
+        <a-entity position="0.2 3.7 0">
+          <a-cone radius-bottom="0.6" height="2.2" color="#16a34a" rotation="60 0 0" position="0 0 0.9"></a-cone>
+          <a-cone radius-bottom="0.6" height="2.2" color="#15803d" rotation="60 120 0" position="0.8 0 -0.4"></a-cone>
+          <a-cone radius-bottom="0.6" height="2.2" color="#16a34a" rotation="60 240 0" position="-0.8 0 -0.4"></a-cone>
+        </a-entity>
+      </a-entity>
+
+      <!-- Palmeira 4 (Atrás-Direita) -->
+      <a-entity position="9 0 8" rotation="0 -120 0">
+        <a-cylinder height="4.2" radius-bottom="0.25" radius-top="0.15" color="#78350f" position="0 2.1 0" rotation="0 0 -9"></a-cylinder>
+        <a-entity position="-0.3 4.1 0">
+          <a-cone radius-bottom="0.7" height="2.5" color="#15803d" rotation="65 30 0" position="0 0 1"></a-cone>
+          <a-cone radius-bottom="0.7" height="2.5" color="#16a34a" rotation="65 150 0" position="0.9 0 -0.5"></a-cone>
+          <a-cone radius-bottom="0.7" height="2.5" color="#22c55e" rotation="65 270 0" position="-0.9 0 0"></a-cone>
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
+    <!-- Universo 360°: Símbolos Matemáticos Tropicais Flutuantes -->
+    <a-entity id="ambiente-360">
+      <a-text value="+" position="5 3.2 -2" color="#0284c7" scale="3.5 3.5 3.5" rotation="0 -30 0" animation="property: position; to: 5 3.7 -2; dir: alternate; dur: 3000; loop: true"></a-text>
+      <a-text value="÷" position="-5 2.8 -3" color="#d97706" scale="3.5 3.5 3.5" rotation="0 30 0" animation="property: position; to: -5 2.2 -3; dir: alternate; dur: 3500; loop: true"></a-text>
+      <a-text value="×" position="6.5 2 3.5" color="#059669" scale="4 4 4" rotation="0 -130 0" animation="property: position; to: 6.5 2.6 3.5; dir: alternate; dur: 2800; loop: true"></a-text>
+      <a-text value="-" position="-6.5 3.2 2.5" color="#dc2626" scale="3.5 3.5 3.5" rotation="0 110 0" animation="property: position; to: -6.5 2.6 2.5; dir: alternate; dur: 3200; loop: true"></a-text>
+      <a-text value="π" position="0 4.8 5.5" color="#9333ea" scale="4 4 4" rotation="0 180 0" animation="property: position; to: 0 4.2 5.5; dir: alternate; dur: 4000; loop: true"></a-text>
+      <a-text value="√" position="4.5 2.2 5" color="#db2777" scale="3.5 3.5 3.5" rotation="0 -150 0" animation="property: position; to: 4.5 2.8 5; dir: alternate; dur: 3300; loop: true"></a-text>
+      <a-text value="%" position="-4.5 3.5 4.5" color="#0891b2" scale="3.5 3.5 3.5" rotation="0 140 0" animation="property: position; to: -4.5 2.9 4.5; dir: alternate; dur: 3700; loop: true"></a-text>
+      <a-text value="∞" position="0 5.2 -4" color="#e11d48" scale="4 4 4" animation="property: position; to: 0 5.8 -4; dir: alternate; dur: 4200; loop: true"></a-text>
+    </a-entity>
+
+    <!-- Câmera e Controles VR -->
+    <a-entity id="rig" position="0 1.6 0">
+      <a-camera id="camera" look-controls="enabled: true; magicWindowTrackingEnabled: true; touchEnabled: true; mouseEnabled: true; pitchBoundaryEnabled: false">
+        <a-cursor
+          id="cursor-pc"
+          geometry="primitive: ring; radiusInner: 0.012; radiusOuter: 0.022"
+          material="color: #38bdf8; shader: flat"
+          position="0 0 -1"
+          raycaster="objects: .clickable">
+        </a-cursor>
+      </a-camera>
+
+      <!-- Sabres de Luz VR -->
+      <!-- Mão Esquerda -->
+      <a-entity laser-controls="hand: left" raycaster="objects: .clickable; far: 25; showLine: true; lineMaterial: color: #38bdf8; opacity: 0.9">
+        <a-entity position="0 0 -0.15" rotation="-50 0 0">
+          <a-cylinder radius="0.02" height="0.22" color="#64748b" position="0 -0.11 0" material="metalness: 0.8; roughness: 0.2"></a-cylinder>
+          <a-cylinder radius="0.023" height="0.04" color="#0f172a" position="0 -0.02 0"></a-cylinder>
+          <a-sphere radius="0.022" color="#0284c7" position="0 -0.22 0"></a-sphere>
+          <a-cylinder radius="0.016" height="0.9" color="#38bdf8" position="0 0.45 0" material="shader: flat; opacity: 0.9" animation="property: material.opacity; to: 1.0; dir: alternate; dur: 400; loop: true"></a-cylinder>
+          <a-sphere radius="0.018" color="#ffffff" position="0 0.9 0" material="shader: flat"></a-sphere>
+        </a-entity>
+      </a-entity>
+
+      <!-- Mão Direita -->
+      <a-entity laser-controls="hand: right" raycaster="objects: .clickable; far: 25; showLine: true; lineMaterial: color: #10b981; opacity: 0.9">
+        <a-entity position="0 0 -0.15" rotation="-50 0 0">
+          <a-cylinder radius="0.02" height="0.22" color="#64748b" position="0 -0.11 0" material="metalness: 0.8; roughness: 0.2"></a-cylinder>
+          <a-cylinder radius="0.023" height="0.04" color="#0f172a" position="0 -0.02 0"></a-cylinder>
+          <a-sphere radius="0.022" color="#047857" position="0 -0.22 0"></a-sphere>
+          <a-cylinder radius="0.016" height="0.9" color="#10b981" position="0 0.45 0" material="shader: flat; opacity: 0.9" animation="property: material.opacity; to: 1.0; dir: alternate; dur: 400; loop: true"></a-cylinder>
+          <a-sphere radius="0.018" color="#ffffff" position="0 0.9 0" material="shader: flat"></a-sphere>
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
+    <!-- PAINEL PRINCIPAL -->
+    <a-entity position="0 2.3 -3.5">
+      <a-plane width="4.8" height="2.0" color="#0f172a" opacity="0.92" material="shader: flat"></a-plane>
+      <a-box width="4.86" height="2.06" depth="0.04" position="0 0 -0.03" color="#38bdf8" opacity="0.4"></a-box>
+      <a-text value="MATEMATICA VR" align="center" position="0 0.72 0.05" scale="0.95 0.95 0.95" color="#38bdf8"></a-text>
+      <a-text id="txt-coracoes" value="❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️ ❤️" align="center" position="0 0.36 0.05" scale="0.85 0.85 0.85" color="#ef4444"></a-text>
+      <a-text id="txt-vidas-num" value="8 / 8 Vidas" align="center" position="0 0.12 0.05" scale="0.5 0.5 0.5" color="#94a3b8"></a-text>
+      <a-text id="txt-pergunta" value="Aponte com o laser para iniciar" align="center" position="0 -0.26 0.05" scale="1.35 1.35 1.35" color="#ffffff"></a-text>
+      <a-text id="txt-score" value="Pontos: 0" align="center" position="0 -0.72 0.05" scale="0.6 0.6 0.6" color="#f59e0b"></a-text>
+    </a-entity>
+
+    <!-- CARTÕES DE RESPOSTA 3D HOLOGRÁFICOS -->
+    <a-entity id="grupo-respostas" position="0 0.8 -3.2">
+      <a-entity id="card-0" class="clickable" position="-2.4 0 0" onclick="checarResposta(0)">
+        <a-box width="1.1" height="0.9" depth="0.1" color="#1e293b" material="roughness: 0.3"></a-box>
+        <a-text id="txt-op-0" value="?" align="center" position="0 0 0.08" scale="2.2 2.2 2.2" color="#38bdf8"></a-text>
+      </a-entity>
+
+      <a-entity id="card-1" class="clickable" position="-0.8 0 0" onclick="checarResposta(1)">
+        <a-box width="1.1" height="0.9" depth="0.1" color="#1e293b" material="roughness: 0.3"></a-box>
+        <a-text id="txt-op-1" value="?" align="center" position="0 0 0.08" scale="2.2 2.2 2.2" color="#38bdf8"></a-text>
+      </a-entity>
+
+      <a-entity id="card-2" class="clickable" position="0.8 0 0" onclick="checarResposta(2)">
+        <a-box width="1.1" height="0.9" depth="0.1" color="#1e293b" material="roughness: 0.3"></a-box>
+        <a-text id="txt-op-2" value="?" align="center" position="0 0 0.08" scale="2.2 2.2 2.2" color="#38bdf8"></a-text>
+      </a-entity>
+
+      <a-entity id="card-3" class="clickable" position="2.4 0 0" onclick="checarResposta(3)">
+        <a-box width="1.1" height="0.9" depth="0.1" color="#1e293b" material="roughness: 0.3"></a-box>
+        <a-text id="txt-op-3" value="?" align="center" position="0 0 0.08" scale="2.2 2.2 2.2" color="#38bdf8"></a-text>
+      </a-entity>
+    </a-entity>
+
+    <!-- BOTÕES 3D DE AJUSTE DE ALTURA -->
+    <a-entity position="0 0.05 -3.2">
+      <a-entity id="btn-subir" class="clickable" position="-1.2 0 0" onclick="ajustarAltura(0.4)">
+        <a-box width="1.4" height="0.3" depth="0.08" color="#0284c7"></a-box>
+        <a-text value="^ SUBIR CAMERA" align="center" position="0 0 0.06" scale="0.5 0.5 0.5" color="#ffffff"></a-text>
+      </a-entity>
+
+      <a-entity id="btn-descer" class="clickable" position="1.2 0 0" onclick="ajustarAltura(-0.4)">
+        <a-box width="1.4" height="0.3" depth="0.08" color="#0284c7"></a-box>
+        <a-text value="v DESCER CAMERA" align="center" position="0 0 0.06" scale="0.5 0.5 0.5" color="#ffffff"></a-text>
+      </a-entity>
+    </a-entity>
+  </a-scene>
+
+  <!-- Script Lógico Externo -->
+  <script src="script.js"></script>
+</body>
+</html>
